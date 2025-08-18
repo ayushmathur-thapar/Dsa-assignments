@@ -1,0 +1,104 @@
+#include <iostream>
+using namespace std;
+
+// Q1: Menu driven program
+void createArray(int arr[], int &n) {
+    cout << "Enter size: "; cin >> n;
+    cout << "Enter elements: ";
+    for (int i = 0; i < n; i++) cin >> arr[i];
+}
+void displayArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+}
+void insertElement(int arr[], int &n) {
+    int pos, val;
+    cout << "Enter position and value: "; cin >> pos >> val;
+    for (int i = n; i > pos; i--) arr[i] = arr[i-1];
+    arr[pos] = val;
+    n++;
+}
+void deleteElement(int arr[], int &n) {
+    int pos; cout << "Enter position: "; cin >> pos;
+    for (int i = pos; i < n-1; i++) arr[i] = arr[i+1];
+    n--;
+}
+void linearSearch(int arr[], int n) {
+    int key; cout << "Enter element: "; cin >> key;
+    for (int i = 0; i < n; i++)
+        if (arr[i] == key) { cout << "Found at " << i << endl; return; }
+    cout << "Not Found\n";
+}
+void menu() {
+    int arr[100], n = 0, choice;
+    while (true) {
+        cout << "1.CREATE 2.DISPLAY 3.INSERT 4.DELETE 5.SEARCH 6.EXIT\n";
+        cin >> choice;
+        switch(choice) {
+            case 1: createArray(arr, n); break;
+            case 2: displayArray(arr, n); break;
+            case 3: insertElement(arr, n); break;
+            case 4: deleteElement(arr, n); break;
+            case 5: linearSearch(arr, n); break;
+            case 6: return;
+        }
+    }
+}
+
+// Q2: Remove duplicates
+void removeDuplicates(int arr[], int &n) {
+    int temp[100], k=0;
+    for (int i=0;i<n;i++) {
+        bool unique=true;
+        for (int j=0;j<k;j++)
+            if (arr[i]==temp[j]) { unique=false; break; }
+        if (unique) temp[k++]=arr[i];
+    }
+    n=k;
+    for (int i=0;i<n;i++) arr[i]=temp[i];
+}
+
+// Q3: Predict Output
+// int arr[5] = {1};
+// Output: 1 0 0 0 0
+
+// Q4a: Reverse array
+void reverseArray(int arr[], int n) {
+    for (int i=0;i<n/2;i++) swap(arr[i],arr[n-1-i]);
+}
+
+// Q4b: Matrix multiplication
+void multiplyMatrix(int A[10][10], int B[10][10], int C[10][10], int n, int m, int p) {
+    for (int i=0;i<n;i++)
+        for (int j=0;j<p;j++) {
+            C[i][j]=0;
+            for (int k=0;k<m;k++) C[i][j]+=A[i][k]*B[k][j];
+        }
+}
+
+// Q4c: Transpose
+void transpose(int A[10][10], int T[10][10], int n, int m) {
+    for (int i=0;i<n;i++)
+        for (int j=0;j<m;j++) T[j][i]=A[i][j];
+}
+
+// Q5: Row and Column sum
+void rowColSum(int A[10][10], int n, int m) {
+    for (int i=0;i<n;i++) {
+        int sum=0;
+        for (int j=0;j<m;j++) sum+=A[i][j];
+        cout << "Row " << i << " sum = " << sum << endl;
+    }
+    for (int j=0;j<m;j++) {
+        int sum=0;
+        for (int i=0;i<n;i++) sum+=A[i][j];
+
+        cout << "Col " << j << " sum = " << sum << endl;
+    }
+}
+
+int main() {
+    // Run functions as per requirement
+    // menu();
+    return 0;
+}
