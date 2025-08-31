@@ -1,0 +1,532 @@
+ 
+
+
+question 1 - 
+
+#include <stdio.h>
+#include <stdlib.h>   // For exit()
+
+#define MAX 5   // Maximum size of stack
+
+int stack[MAX];
+int top = -1;
+
+// Function to check if stack is empty
+int isEmpty() {
+    return (top == -1);
+}
+
+// Function to check if stack is full
+int isFull() {
+    return (top == MAX - 1);
+}
+
+// Function to push element in stack
+void push(int val) {
+    if (isFull()) {
+        printf("\nStack Overflow! Cannot push %d\n", val);
+    } else {
+        stack[++top] = val;
+        printf("%d pushed into stack.\n", val);
+    }
+}
+
+// Function to pop element from stack
+int pop() {
+    if (isEmpty()) {
+        printf("\nStack Underflow! Nothing to pop.\n");
+        return -1;
+    } else {
+        printf("%d popped from stack.\n", stack[top]);
+        return stack[top--];
+    }
+}
+
+// Function to peek (return top element)
+int peek() {
+    if (isEmpty()) {
+        printf("\nStack is empty. No top element.\n");
+        return -1;
+    } else {
+        return stack[top];
+    }
+}
+
+// Function to display stack
+void display() {
+    if (isEmpty()) {
+        printf("\nStack is empty.\n");
+    } else {
+        printf("\nStack elements (Top to Bottom):\n");
+        for (int i = top; i >= 0; i--) {
+            printf("%d\n", stack[i]);
+        }
+    }
+}
+
+int main() {
+    int choice, value;
+
+    while (1) {
+        printf("\n--- Stack Menu ---\n");
+        printf("1. Push\n");
+        printf("2. Pop\n");
+        printf("3. Check if Empty\n");
+        printf("4. Check if Full\n");
+        printf("5. Peek\n");
+        printf("6. Display\n");
+        printf("7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            printf("Enter value to push: ");
+            scanf("%d", &value);
+            push(value);
+            break;
+        case 2:
+            pop();
+            break;
+        case 3:
+            if (isEmpty())
+                printf("\nStack is Empty.\n");
+            else
+                printf("\nStack is not Empty.\n");
+            break;
+        case 4:
+            if (isFull())
+                printf("\nStack is Full.\n");
+            else
+                printf("\nStack is not Full.\n");
+            break;
+        case 5:
+            value = peek();
+            if (value != -1)
+                printf("Top element is %d\n", value);
+            break;
+        case 6:
+            display();
+            break;
+        case 7:
+            printf("Exiting...\n");
+            exit(0);
+        default:
+            printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+
+
+QUESTION 2-
+
+#include <iostream>
+#include <stack>
+#include <string>
+
+using namespace std;
+
+string reverseStringUsingStack(const string& str) {
+    stack<char> charStack;
+
+    // Push all characters onto the stack
+    for (char ch : str) {
+        charStack.push(ch);
+    }
+
+    // Pop characters from the stack to build the reversed string
+    string reversedStr;
+    while (!charStack.empty()) {
+        reversedStr += charStack.top();
+        charStack.pop();
+    }
+
+    return reversedStr;
+}
+
+int main() {
+    string input = "DataStructure";
+    string output = reverseStringUsingStack(input);
+    cout << output << endl;  // Output: erutcurtSataD
+    return 0;
+}
+
+
+question 3 - 
+
+class Solution {
+public:
+    bool isValid(string str) {
+        stack<char> s;
+
+        for(int i=0 ; i<str.size() ; i++){
+            if(str[i] == '(' || str[i] =='{' || str[i] == '['){
+                s.push(str[i]);
+            }
+
+            else{
+                if(s.size() == 0){
+                    return false ;
+                }
+
+                if((stop()=='(') && str[i] == ')' || 
+                s.top() == '{' && str[i]== '}' || 
+                s.top()== '[' && str[i]==']'){
+                    s.pop();
+                }
+
+                else{
+                    return false ;
+                }
+            }
+        }
+
+        return s.size() == 0 ;
+    }
+};
+
+question 4 - 
+
+#include <iostream>
+#include <stack>
+#include <string>
+#include <cctype> // for isalnum
+
+using namespace std;
+
+// Function to return precedence of operators
+int precedence(char c) {
+    if (c == '^')
+        return 3;
+    else if (c == '*' || c == '/')
+        return 2;
+    else if (c == '+' || c == '-')
+        return 1;
+    else
+        return -1;
+}
+
+// Function to convert infix expression to postfix
+string infixToPostfix(const string& infix) {
+    stack<char> s;
+    string postfix;
+
+    int length = infix.length();
+    for (int i = 0; i < length; i++) {
+        char c = infix[i];
+
+        // If the character is an operand, add it to postfix
+        if (isalnum(c)) {
+            postfix += c;
+        }
+        // If '(' push to stack
+        else if (c == '(') {
+            s.push(c);
+        }
+        // If ')' pop and output until '(' is found
+        else if (c == ')') {
+            while (!s.empty() && s.top() != '(') {
+                postfix += s.top();
+                s.pop();
+            }
+            if (!s.empty()) s.pop();  // Remove '('
+        }
+        // If an operator
+        else {
+            while (!s.empty() && precedence(s.top()) >= precedence(c)) {
+                postfix += s.top();
+                s.pop();
+            }
+            s.push(c);
+        }
+    }
+
+    // Pop remaining operators from stack
+    while (!s.empty()) {
+        postfix += s.top();
+        s.pop();
+    }
+
+    return postfix;
+}
+
+int main() {
+    string infix;
+    cout << "Enter an Infix expression: ";
+    cin >> infix;
+
+    string postfix = infixToPostfix(infix);
+    cout << "Postfix Expression: " << postfix << endl;
+
+    return 0;
+}
+
+
+5th question 
+
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+int evaluatePostfix(const vector<string>& tokens) {
+    stack<int> st;
+    int n = tokens.size();
+    
+    // Process tokens in order
+    for (int i = 0; i < n; ++i) {
+        const string& token = tokens[i];
+        
+        // If operator, pop two values, apply, push result
+        if (token == "+" || token == "-" || token == "*" || token == "/") {
+            int b = st.top(); st.pop();
+            int a = st.top(); st.pop();
+            int res = 0;
+            if (token == "+") res = a + b;
+            else if (token == "-") res = a - b;
+            else if (token == "*") res = a * b;
+            else { // division
+                if (b == 0) {
+                    cerr << "Error: Division by zero\n";
+                    exit(1);
+                }
+                res = a / b;
+            }
+            st.push(res);
+        }
+        // Otherwise, convert number and push
+        else {
+            st.push(stoi(token));
+        }
+    }
+    
+    // Final result
+    return st.top();
+}
+
+int main() {
+    // Postfix expression: 5 1 2 + 4 * + 3 -
+    vector<string> tokens = {"5", "1", "2", "+", "4", "*", "+", "3", "-"};
+    
+    int result = evaluatePostfix(tokens);
+    cout << "Result: " << result << "\n";
+    return 0;
+}
+
+
+
+
+
+EXTRA QUESTIONS 
+
+A) 1ST METHOD 
+
+#include <stdio.h>
+
+void nearestSmaller(int A[], int n, int B[]) {
+    for (int i = 0; i < n; i++) {
+        int Naw = -1;  // Initialize as -1 before checking
+        for (int j = i - 1; j >= 0; j--) {
+            if (A[j] < A[i]) {
+                Naw = A[j];  // Assign smaller element when found
+                break;       // Break to get the nearest smaller on left
+            }
+        }
+        B[i] = Naw;
+    }
+}
+
+int main() {
+    int A[] = {4, 5, 2, 10, 8};
+    int n = sizeof(A) / sizeof(A[0]);
+    int B[n];
+    
+    nearestSmaller(A, n, B);
+    
+    for (int i = 0; i < n; i++) {
+        printf("%d ", B[i]);
+    }
+    return 0;
+}
+
+
+A) 2ND METHOD STACK
+
+#include <stdio.h>
+
+#define MAX_SIZE 1000
+
+void nearestSmallerStack(int A[], int n, int B[]) {
+    int stack[MAX_SIZE];
+    int top = -1;  // Stack initially empty
+    
+    for (int i = 0; i < n; i++) {
+        // Pop elements from stack while stack top is >= current element
+        while (top != -1 && stack[top] >= A[i]) {
+            top--;
+        }
+        
+        // If stack is empty, no smaller element on left
+        if (top == -1) {
+            B[i] = -1;
+        } else {
+            B[i] = stack[top];  // Nearest smaller element
+        }
+        
+        // Push current element onto stack
+        stack[++top] = A[i];
+    }
+}
+
+int main() {
+    int A[] = {4, 5, 2, 10, 8};
+    int n = sizeof(A) / sizeof(A[0]);
+    int B[n];
+    
+    nearestSmallerStack(A, n, B);
+    
+    for (int i = 0; i < n; i++) {
+        printf("%d ", B[i]);
+    }
+    
+    return 0;
+}
+
+2ND QUESTION 
+
+#include <iostream>
+#include <stack>
+#include <stdexcept>
+using namespace std;
+
+class MinStack {
+private:
+    stack<int> mainSt;
+    stack<int> minSt;
+
+public:
+    // Push x onto the stack in O(1)
+    void push(int x) {
+        mainSt.push(x);
+        if (minSt.empty() || x <= minSt.top()) {
+            minSt.push(x);
+        } else {
+            minSt.push(minSt.top());
+        }
+    }
+
+    // Pop the top element in O(1)
+    void pop() {
+        if (mainSt.empty()) throw out_of_range("pop from empty stack");
+        mainSt.pop();
+        minSt.pop();
+    }
+
+    // Top element in O(1)
+    int top() const {
+        if (mainSt.empty()) throw out_of_range("top from empty stack");
+        return mainSt.top();
+    }
+
+    // Get minimum in O(1)
+    int getMin() const {
+        if (minSt.empty()) throw out_of_range("getMin from empty stack");
+        return minSt.top();
+    }
+};
+
+int main() {
+    MinStack s;
+    s.push(3);
+    s.push(5);
+    s.push(2);
+    s.push(1);
+
+    cout << "Current min: " << s.getMin() << "\n"; // 1
+    s.pop();
+    cout << "Current min: " << s.getMin() << "\n"; // 2
+    cout << "Top element: " << s.top() << "\n";    // 2
+    return 0;
+}
+
+
+3rd question 
+
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+vector<int> nextLargerElement(vector<int> &arr) {
+    int n = arr.size();
+    vector<int> res(n, -1);
+    stack<int> stk;
+
+    for (int i = n - 1; i >= 0; i--) {
+
+        // Pop elements from the stack that are less
+        // than or equal to the current element
+        while (!stk.empty() && stk.top() <= arr[i]) {
+            stk.pop();
+        }
+
+        // If the stack is not empty, the top element
+        // is the next greater element
+        if (!stk.empty()) {
+            res[i] = stk.top();
+        }
+
+        // Push the current element onto the stack
+        stk.push(arr[i]);
+    }
+
+    return res;
+}
+
+int main() {
+
+    vector<int> arr = {6, 8, 0, 1, 3};
+    vector<int> res = nextLargerElement(arr);
+
+    for (int x : res) {
+        cout << x << " ";
+    }
+
+    return 0;
+}
+
+4th question 
+
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        int n = temperatures.size();
+        vector<int> result(n, 0);
+        int stack[n];  // normal array as stack for indices
+        int top = -1;
+
+        for (int i = n - 1; i >= 0; i--) {
+            while (top != -1 && temperatures[i] >= temperatures[stack[top]]) {
+                top--;
+            }
+            if (top == -1)
+                result[i] = 0;
+            else
+                result[i] = stack[top] - i;
+
+            stack[++top] = i;
+        }
+
+        return result;
+    }
+};
+
+
+
+
+
+
+
