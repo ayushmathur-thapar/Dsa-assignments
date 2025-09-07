@@ -1,0 +1,272 @@
+Q1: Simple Queue 
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class SimpleQueue {
+    int front, rear, size;
+    int arr[100];
+public:
+    SimpleQueue() { front = rear = -1; size = 100; }
+
+    bool isEmpty() { return front == -1; }
+    bool isFull() { return (rear + 1) % size == front; }
+
+    void enqueue(int x) {
+        if (isFull()) { cout << "Queue Overflow!\n"; return; }
+        if (front == -1) front = 0;
+        rear = (rear + 1) % size;
+        arr[rear] = x;
+        cout << x << " enqueued\n";
+    }
+
+    void dequeue() {
+        if (isEmpty()) { cout << "Queue Underflow!\n"; return; }
+        cout << arr[front] << " dequeued\n";
+        if (front == rear) front = rear = -1;
+        else front = (front + 1) % size;
+    }
+
+    void peek() {
+        if (isEmpty()) cout << "Queue Empty\n";
+        else cout << "Front Element: " << arr[front] << endl;
+    }
+
+    void display() {
+        if (isEmpty()) { cout << "Queue Empty\n"; return; }
+        cout << "Queue: ";
+        int i = front;
+        while (true) {
+            cout << arr[i] << " ";
+            if (i == rear) break;
+            i = (i + 1) % size;
+        }
+        cout << endl;
+    }
+};
+
+Q2: Circular Queue 
+
+class CircularQueue {
+    int front, rear, size;
+    int arr[100];
+public:
+    CircularQueue() { front = rear = -1; size = 100; }
+
+    bool isEmpty() { return front == -1; }
+    bool isFull() { return (rear + 1) % size == front; }
+
+    void enqueue(int x) {
+        if (isFull()) { cout << "Circular Queue Overflow!\n"; return; }
+        if (front == -1) front = 0;
+        rear = (rear + 1) % size;
+        arr[rear] = x;
+        cout << x << " enqueued\n";
+    }
+
+    void dequeue() {
+        if (isEmpty()) { cout << "Circular Queue Underflow!\n"; return; }
+        cout << arr[front] << " dequeued\n";
+        if (front == rear) front = rear = -1;
+        else front = (front + 1) % size;
+    }
+
+    void peek() {
+        if (isEmpty()) cout << "Circular Queue Empty\n";
+        else cout << "Front Element: " << arr[front] << endl;
+    }
+
+    void display() {
+        if (isEmpty()) { cout << "Circular Queue Empty\n"; return; }
+        cout << "Circular Queue: ";
+        int i = front;
+        while (true) {
+            cout << arr[i] << " ";
+            if (i == rear) break;
+            i = (i + 1) % size;
+        }
+        cout << endl;
+    }
+};
+
+Q3: Interleave Queue 
+
+void interleaveQueue(queue<int> &q) {
+    int n = q.size();
+    int half = n / 2;
+
+    queue<int> firstHalf;
+    for (int i = 0; i < half; i++) {
+        firstHalf.push(q.front());
+        q.pop();
+    }
+
+    // Interleave
+    while (!firstHalf.empty()) {
+        q.push(firstHalf.front());
+        firstHalf.pop();
+
+        q.push(q.front());
+        q.pop();
+    }
+}
+
+ Q4: First Non-Repeating Character 
+
+char firstNonRepeating(string s) {
+    vector<int> freq(256, 0);
+    queue<char> q;
+
+    for (char c : s) {
+        freq[c]++;
+        q.push(c);
+
+        while (!q.empty() && freq[q.front()] > 1)
+            q.pop();
+    }
+
+    if (q.empty()) return '-';
+    return q.front();
+}
+
+Q5a: Stack using Two Queues
+ 
+class StackTwoQueues {
+    queue<int> q1, q2;
+public:
+    void push(int x) {
+        q2.push(x);
+        while (!q1.empty()) {
+            q2.push(q1.front());
+            q1.pop();
+        }
+        swap(q1, q2);
+    }
+    void pop() {
+        if (q1.empty()) { cout << "Stack Empty\n"; return; }
+        cout << "Popped: " << q1.front() << endl;
+        q1.pop();
+    }
+    void top() {
+        if (q1.empty()) cout << "Stack Empty\n";
+        else cout << "Top: " << q1.front() << endl;
+    }
+};
+
+Q5b: Stack using One Queue
+ 
+class StackOneQueue {
+    queue<int> q;
+public:
+    void push(int x) {
+        q.push(x);
+        for (int i = 0; i < q.size() - 1; i++) {
+            q.push(q.front());
+            q.pop();
+        }
+    }
+    void pop() {
+        if (q.empty()) { cout << "Stack Empty\n"; return; }
+        cout << "Popped: " << q.front() << endl;
+        q.pop();
+    }
+    void top() {
+        if (q.empty()) cout << "Stack Empty\n";
+        else cout << "Top: " << q.front() << endl;
+    }
+};
+
+
+Extra Q1: Generate Binary Numbers 
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<string> generateBinary(int n) {
+    vector<string> result;
+    queue<string> q;
+    q.push("1");
+
+    for (int i = 0; i < n; i++) {
+        string s = q.front();
+        q.pop();
+        result.push_back(s);
+        q.push(s + "0");
+        q.push(s + "1");
+    }
+    return result;
+}
+
+Extra Q2: Sort a Queue without Extra Space
+ 
+void sortQueue(queue<int>& q) {
+    int n = q.size();
+    for (int i = 0; i < n; i++) {
+        int mini = INT_MAX, sz = q.size();
+
+        // find minimum in current queue
+        for (int j = 0; j < sz; j++) {
+            int val = q.front(); q.pop();
+            if (val < mini) mini = val;
+            q.push(val);
+        }
+
+        // move minimum to rear
+        bool moved = false;
+        for (int j = 0; j < sz; j++) {
+            int val = q.front(); q.pop();
+            if (val == mini && !moved) { moved = true; }
+            else q.push(val);
+        }
+        q.push(mini);
+    }
+}
+
+Extra Q3: Check if Queue can be sorted using Stack 
+
+bool checkSorted(queue<int> q) {
+    stack<int> s;
+    int expected = 1;
+    int n = q.size();
+
+    while (!q.empty()) {
+        int front = q.front();
+        q.pop();
+
+        if (front == expected) {
+            expected++;
+        } else {
+            if (!s.empty() && s.top() < front) return false;
+            s.push(front);
+        }
+
+        while (!s.empty() && s.top() == expected) {
+            s.pop();
+            expected++;
+        }
+    }
+
+    return expected - 1 == n;
+}
+
+ Extra Q4: Sandwich Problem 
+int countStudents(vector<int>& students, vector<int>& sandwiches) {
+    queue<int> q;
+    for (int s : students) q.push(s);
+    int i = 0, count = 0;
+
+    while (!q.empty() && count < q.size()) {
+        if (q.front() == sandwiches[i]) {
+            q.pop();
+            i++;
+            count = 0;
+        } else {
+            q.push(q.front());
+            q.pop();
+            count++;
+        }
+    }
+    return q.size();
+}
+
+
